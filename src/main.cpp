@@ -33,8 +33,8 @@ const double Smoke[3] = {
 };
 */
 
-const double CO[2] = { 1.51, -0.34 };
-const double LPG[2] = { 1.25, -0.47 };
+const double CO[2]    = { 1.51, -0.34 };
+const double LPG[2]   = { 1.25, -0.47 };
 const double Smoke[2] = { 1.62, -0.44 };
 
 void alarm();
@@ -62,13 +62,13 @@ void loop()
 
     double RS = getRS(reading);
 
-    double ppmCO = getPpmValue(RS, CO);
-    double ppmLPG = getPpmValue(RS, LPG);
-    double ppmSmoke = getPpmValue(RS, Smoke);
+    double ppmCO    = getPpmValue(RS, CO[1], CO[0]);
+    double ppmLPG   = getPpmValue(RS, LPG[1], LPG[0]);
+    double ppmSmoke = getPpmValue(RS, Smoke[1], Smoke[0]);
 
     #ifdef DEBUG
-    Serial.print("CO: "); Serial.print(ppmCO); Serial.print("ppm    ");
-    Serial.print("LPG: "); Serial.print(ppmLPG); Serial.print("ppm    ");
+    Serial.print("CO: ");    Serial.print(ppmCO); Serial.print("ppm    ");
+    Serial.print("LPG: ");   Serial.print(ppmLPG); Serial.print("ppm    ");
     Serial.print("Smoke: "); Serial.print(ppmSmoke); Serial.println("ppm");
     #endif
 
@@ -97,15 +97,13 @@ double getRS(const unsigned &reading)
     return RL * (1024 - reading) / reading;
 }
 
-double getPpmValue(const double &RS, const double gasProfile[2])
+double getPpmValue(const double &RS, const double m, const double b)
 {
     /*
     double x1 = gasProfile[0];
     double y1 = gasProfile[1];
     double m = gasProfile[2];
     */
-    double b = gasProfile[0];
-    double m = gasProfile[1];
 
     return pow(10, (log10(RS/Ro) - b) / m);
     // return pow(10, (log10(RS / Ro) - y1)/m + x1);
