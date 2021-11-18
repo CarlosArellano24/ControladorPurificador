@@ -1,5 +1,23 @@
 #define DEBUG
-
+ 
+/**
+ *  NOTE: Air purifier is refered to as "device" while phone or web app is refered to as "client"
+ *  TODO:
+ *  connection procedure:
+ *    client initiates connection (Checking every 5 minutes)
+ *    client sends uid as serial stream
+ *    device updates its internal array and realtime database uid data
+ *    phone sends command to restart bluetooth module
+ *    if this command is not received, the connected device will restart bluetooth module on its own
+ *  
+ *  connection monitoring:
+ *    device keeps track of every currently connected client's time of connection
+ *    every device that doesn't report back after a set time of 10 minutes (through connection procedure) gets deleted from the internal array
+ *    device updates its realtime database data from internal array
+ *  
+ *    
+ *  
+ */
 
 #include <Arduino.h>
 #include <math.h>
@@ -44,8 +62,8 @@ double getPpmValue(const double &RS, const double gasProfile[3]);
 
 void setup()
 {
-    #ifdef DEBUG
     Serial.begin(115200);
+    #ifdef DEBUG
     Serial.println("#### Serial comms initiated ####");
     #endif
 
@@ -54,6 +72,9 @@ void setup()
     pinMode(sensor, INPUT);
 
     Ro = getRS(51) / cleanAirRatio;
+
+    // sleep device for 2 minutes to allow sensor to heat up and prevent it from throw ng false alarms
+    delay(120e3);
 }
 
 void loop()
@@ -76,7 +97,7 @@ void loop()
     // obtaining sensing resistance derived from voltage divider formula
     // raw readings are used to calculate this as it's not necessary to them convert to voltage values
 
-    if (ppmCO > 800) 
+    if (ppmCO > 500) // previously 800
         alarm();
 }
 
