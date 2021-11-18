@@ -15,7 +15,8 @@
  *    every device that doesn't report back after a set time of 10 minutes (through connection procedure) gets deleted from the internal array
  *    device updates its realtime database data from internal array
  *  
- *    
+ *  BACKLOG:
+ *  NFC support so users can see air quality stats of a device
  *  
  */
 
